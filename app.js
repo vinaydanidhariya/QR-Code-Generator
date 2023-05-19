@@ -37,7 +37,7 @@ app.post("/scan", (req, res) => {
   if (formattedString.length === 0) res.send("Empty Data!");
   qr.toDataURL(formattedString, (err, src) => {
     if (err) res.send("Error occured");
-    res.render("scan", { src });
+    res.render("scan", { title: 'QR Code Generator', src });
   });
 });
 
