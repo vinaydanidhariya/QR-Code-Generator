@@ -22,23 +22,48 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.post("/scan", (req, res) => {
   console.log(req.body);
-
-
-
   const data = req.body;
-
   const formattedString = Object.entries(data)
     .map(([key, value]) => `${key}:${value}`)
     .join(",\n");
 
   console.log(formattedString);
 
-
   if (formattedString.length === 0) res.send("Empty Data!");
   qr.toDataURL(formattedString, (err, src) => {
     if (err) res.send("Error occured");
     res.render("scan", { title: 'QR Code Generator', src });
   });
+});
+
+
+app.post("/dynamic", (req, res) => {
+  console.log(req.body);
+  const json = req.body;
+  JSON.stringify(json)
+  try {
+    var result = '';
+    if (Array.isArray(json.fieldName)) {
+      for (var i = 0; i < json.fieldName.length; i++) {
+        result += json.fieldName[i] + ':' + json.fieldValue[i];
+        if (i !== json.fieldName.length - 1) {
+          result += ', ';
+        }
+      }
+    } else {
+      result += json.fieldName + ':' + json.fieldValue;
+    }
+
+    if (result.length === 0) res.send("Empty Data!");
+    qr.toDataURL(result, (err, src) => {
+      if (err) res.send("Error occured");
+      res.render("scan", { title: 'QR Code Generator', src });
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+
 });
 
 // catch 404 and forward to error handler

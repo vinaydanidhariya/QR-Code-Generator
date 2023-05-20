@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>QR Code Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+        * {
+            font-family: Montserrat;
+        }
+
+        .card {
+            margin: 0 auto;
+            float: none;
+            margin-bottom: 10px;
+        }
+
+        .navbar {
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: justify;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar a {
+            margin: 0.15rem;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <br>
+        <h1 class="text-center">QR CODE GENERATOR</h1>
+        <hr>
+        <div class="navbar">
+            <a class="btn btn-primary" href="/">Structure</a>
+            <a class="btn btn-primary" href="/custom">Custom</a>
+        </div>
+        <div class="row mb-3">
+            <aside class="col-sm-12 text-center">
+
+                <div class="card">
+                    <article class="card-body">
+                        <hr>
+                        <p class="text-success text-center">Please Enter All fields and press Generate!</p>
+                        <form id="myForm">
+                            <div id="fieldsContainer">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> <i class="fa fa-pencil"></i> </span>
+                                        </div>
+                                        <input name="fieldName" class="form-control" placeholder="Field Name"
+                                            type="text" required>
+                                    </div>
+                                    <div class="input-group mt-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"> <i class="fa fa-pencil"></i> </span>
+                                        </div>
+                                        <input name="fieldValue" class="form-control" placeholder="Field Value"
+                                            type="text" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class='btn btn-primary' type="button" id="addFieldButton">Add Field</button>
+                            <button class='btn btn-primary' type="submit">Generate</button>
+                        </form>
+                    </article>
+                </div>
+                <div id="responseContainer"></div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var fieldIndex = 0;
+
+            $("#addFieldButton").click(function () {
+                var fieldHtml = `
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-pencil"></i> </span>
+              </div>
+              <input name="fieldName" class="form-control" placeholder="Field Name" type="text" required>
+            </div>
+            <div class="input-group mt-2">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-pencil"></i> </span>
+              </div>
+              <input name="fieldValue" class="form-control" placeholder="Field Value" type="text" required>
+            </div>
+          </div>
+        `;
+
+                $("#fieldsContainer").append(fieldHtml);
+                fieldIndex++;
+            });
+
+            $("#myForm").submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                console.log(formData);
+                $.ajax({
+                    url: "/dynamic",
+                    method: "POST",
+                    data: formData,
+                    success: function (response) {
+                        $("#responseContainer").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+                $(this).trigger("reset");
+                $("#fieldsContainer").empty();
+            });
+        });
+    </script>
+</body>
+
+</html>
